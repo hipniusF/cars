@@ -23,7 +23,8 @@ class Tile(QWidget):
 
         return label
 
-    def set_orientation(self, x, y):
+    def set_orientation(self, orient):
+        x, y = orient
         assert x*y == 0
 
         self.orientation = (x,y)
@@ -36,7 +37,8 @@ class Road(Tile):
         self.orientation = (0,1)
         self.sprite ='road.png'
 
-    def set_orientation(self, x, y):
+    def set_orientation(self, orient):
+        x, y = orient
         if x*y != 0:
             self.sprite = 'intersection.png'
         self.orientation = (x,y)

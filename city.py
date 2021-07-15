@@ -24,7 +24,7 @@ class City(QWidget):
         self.layout.setHorizontalSpacing(0)
         self.layout.setVerticalSpacing(0)
 
-        self.make_prims_maze()
+        self.make_rand_roads()
         self.draw()
 
     def get_neighbors(self, x, y):
@@ -50,6 +50,49 @@ class City(QWidget):
 
         return neig
 
+    def make_rand_roads(self):
+        n_hor = 5
+        n_ver = 5
+
+        def set_road(x, y, orient):
+            if not isinstance(self.grid[y][x], Road):
+                new_road = Road()
+                new_road.set_orientation(orient)
+                self.grid[y][x] = new_road
+            else:
+                old_orient = self.grid[y][x].orientation
+                new_orient = (old_orient[0] + orient[0], old_orient[1] + orient[1])
+
+                new_road = Road()
+                new_road.set_orientation(new_orient)
+                self.grid[y][x] = new_road
+
+        def make_road(init_pnt, ver=False, reverse=False):
+            width = len(self.grid) if ver else len(self.grid[0])
+
+            for i in range(width):
+                # if random.random() < 0.15:
+                #     ver = not ver
+                #     tmp = i
+                #     i = init_pnt
+                #     init_pnt = tmp
+
+                if not ver:
+                    orient = (-1,0) if reverse else (1, 0)
+                    set_road(i, init_pnt, orient)
+                else:
+                    orient = (0,-1) if reverse else (0, 1)
+                    set_road(init_pnt, i, orient)
+
+        h_paths = set(range(len(self.grid[0])))
+        for path in random.sample(h_paths, n_hor):
+            reverse = random.randint(0, 1)
+            make_road(path, reverse=reverse)
+
+        v_paths = set(range(len(self.grid)))
+        for path in random.sample(v_paths, n_ver):
+            reverse = random.randint(0, 1)
+            make_road(path, ver=True, reverse=reverse)
 
     def make_prims_maze(self):
         walls = []
